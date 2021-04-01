@@ -97,8 +97,8 @@ POST_0x0() {
 }
 REGEX_RAW_0x0='s|^http.*|\0|'
 REGEX_URL_0x0='s|^http.*|\0|p'
-LANGUAGES_codepad="C C++ D Haskell Lua OCaml PHP Perl Plain%Text Python Ruby Scheme Tcl"
 # codepad
+LANGUAGES_codepad="C C++ D Haskell Lua OCaml PHP Perl Plain%Text Python Ruby Scheme Tcl"
 POST_codepad() {
 	POST_generic "submit % % lang % % code" "$1" "$2" "$3" "$4" "$5" "$6"
 }
