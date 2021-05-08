@@ -1,11 +1,11 @@
 Name:           wgetpaste
-Version:        2.29
+Version:        2.30.1
 Release:        1%{?dist}
 Summary:        Command-line interface to various paste-bins
 
 License:        MIT
-URL:            http://%{name}.zlin.dk/
-Source0:        %{url}/%{name}-%{version}.tar.bz2
+URL:            https://github.com/nvinson/%{name}/
+Source0:        ${url}/archive/refs/tags/${version}.tar.gz
 
 Requires:       bash sed wget
 
