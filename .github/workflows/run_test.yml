@@ -1,21 +1,27 @@
 name: 'wgetpaste test runner'
 on: [pull_request, push]
 jobs:
-  run-test:
-    name: 'Run test/test.sh'
+  run-tests:
+    strategy:
+      matrix:
+        test: [test.sh, test_ansi.sh]
+    name: "Run test/${{ matrix.test }}"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: test/test.sh
-        shell: bash
-  run-test-ansi:
-    name: 'Run test/test_ansi.sh'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: 'Install ansifilter'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+
+      - name: 'Install dependencies'
         run: |
           sudo apt-get update
-          sudo apt-get install ansifilter
-      - run: test/test_ansi.sh
+          sudo apt-get install meson ${{ matrix.test == 'test_ansi.sh' && 'ansifilter' || '' }}
         shell: bash
+
+      - name: 'Build wgetpaste'
+        run: |
+          mkdir build
+          meson setup build --prefix="/"
+          meson install -C ./build --destdir="$PWD/build/image"
+        shell: bash
+
+      - run: test/${{ matrix.test }}

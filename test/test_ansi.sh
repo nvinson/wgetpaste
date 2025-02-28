@@ -7,6 +7,7 @@
 
 # Don't assume the test is being run from the same directory as the script
 TEST_DIR="$(dirname "$0")"
+WGETPASTE="${TEST_DIR}/../build/image/bin/wgetpaste"
 ANSI_FILE="$TEST_DIR/red.txt"
 NOANSI_FILE="$TEST_DIR/red_no_ansi.txt"
 DL_DIR="$(mktemp -q --tmpdir -d wgetpaste_test_ansi.XXXXX)"
@@ -30,7 +31,7 @@ fi
 echo "Using download directory: $DL_DIR"
 
 # Post test file into each service until one succeeds
-for serv in $("$TEST_DIR"/../wgetpaste -S --completions); do
+for serv in $("$WGETPASTE" -S --completions); do
     # Hard skips
     for hs in "${!HARD_SKIPS[@]}"; do
         if [ "$serv" == "$hs" ]; then
@@ -44,7 +45,7 @@ for serv in $("$TEST_DIR"/../wgetpaste -S --completions); do
     # Log deleted at the end of each loop unless error other than 401
     echo -n "Posting to $serv: "
     ERROR_LOG="$DL_DIR/$serv-error.log"
-    URL="$("$TEST_DIR"/../wgetpaste -r -s "$serv" -v "$ANSI_FILE" 2>"$ERROR_LOG")"
+    URL="$("$WGETPASTE" -r -s "$serv" -v "$ANSI_FILE" 2>"$ERROR_LOG")"
     STATUS="$?"
 
     # Skip failed posts (eg, not authorized for GitHub/GitLab, service error)
@@ -96,7 +97,7 @@ fi
 sleep 1
 echo -n "Pasting command output with ANSI stripping (cat): "
 ERROR_LOG="$DL_DIR/command-noansi-error.log"
-URL="$("$TEST_DIR"/../wgetpaste -N -r -s "$WORKING" -v -c "cat $ANSI_FILE" 2>"$ERROR_LOG")"
+URL="$("$WGETPASTE" -N -r -s "$WORKING" -v -c "cat $ANSI_FILE" 2>"$ERROR_LOG")"
 if [ $? -ne 0 ]; then
     echo "FAILED!"
     FAILED_PASTE=$((FAILED_PASTE + 1))
@@ -118,7 +119,7 @@ fi
 sleep 1
 echo -n "Pasting command output without ANSI stripping (cat): "
 ERROR_LOG="$DL_DIR/command-ansi-error.log"
-URL="$("$TEST_DIR"/../wgetpaste -A -r -s "$WORKING" -v -c "cat $ANSI_FILE" 2>"$ERROR_LOG")"
+URL="$("$WGETPASTE" -A -r -s "$WORKING" -v -c "cat $ANSI_FILE" 2>"$ERROR_LOG")"
 if [ $? -ne 0 ]; then
     echo "FAILED!"
     FAILED_PASTE=$((FAILED_PASTE + 1))
@@ -141,7 +142,7 @@ fi
 sleep 1
 echo -n "Pasting stdin with ANSI stripping (cat | wgetpaste): "
 ERROR_LOG="$DL_DIR/stdin-noansi-error.log"
-URL="$(cat "$ANSI_FILE" | "$TEST_DIR"/../wgetpaste -N -r -s "$WORKING" -v 2>"$ERROR_LOG")"
+URL="$(cat "$ANSI_FILE" | "$WGETPASTE" -N -r -s "$WORKING" -v 2>"$ERROR_LOG")"
 if [ $? -ne 0 ]; then
     echo "FAILED!"
     FAILED_PASTE=$((FAILED_PASTE + 1))
@@ -160,7 +161,7 @@ fi
 sleep 1
 echo -n "Pasting stdin without ANSI stripping (cat | wgetpaste): "
 ERROR_LOG="$DL_DIR/stdin-ansi-error.log"
-URL="$(cat "$ANSI_FILE" | "$TEST_DIR"/../wgetpaste -A -r -s "$WORKING" -v 2>"$ERROR_LOG")"
+URL="$(cat "$ANSI_FILE" | "$WGETPASTE" -A -r -s "$WORKING" -v 2>"$ERROR_LOG")"
 if [ $? -ne 0 ]; then
     echo "FAILED!"
     FAILED_PASTE=$((FAILED_PASTE + 1))
@@ -180,7 +181,7 @@ fi
 sleep 1
 echo -n "Pasting a file with ANSI stripping: "
 ERROR_LOG="$DL_DIR/file-noansi-error.log"
-URL="$("$TEST_DIR"/../wgetpaste -N -r -s "$WORKING" -v "$ANSI_FILE" 2>"$ERROR_LOG")"
+URL="$("$WGETPASTE" -N -r -s "$WORKING" -v "$ANSI_FILE" 2>"$ERROR_LOG")"
 if [ $? -ne 0 ]; then
     echo "FAILED!"
     FAILED_PASTE=$((FAILED_PASTE + 1))
@@ -199,7 +200,7 @@ fi
 sleep 1
 echo -n "Pasting a file without ANSI stripping: "
 ERROR_LOG="$DL_DIR/file-ansi-error.log"
-URL="$("$TEST_DIR"/../wgetpaste -A -r -s "$WORKING" -v "$ANSI_FILE" 2>"$ERROR_LOG")"
+URL="$("$WGETPASTE" -A -r -s "$WORKING" -v "$ANSI_FILE" 2>"$ERROR_LOG")"
 if [ $? -ne 0 ]; then
     echo "FAILED!"
     FAILED_PASTE=$((FAILED_PASTE + 1))
