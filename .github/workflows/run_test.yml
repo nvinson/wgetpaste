@@ -6,6 +6,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: 'Install ansifilter'
+        run: |
+          sudo apt-get update
+          sudo apt-get install ansifilter meson
+        shell: bash
+      - name: 'Build wgetpaste'
+        run: |
+          mkdir build
+          meson setup build --prefix="/"
+          meson install -C ./build --destdir="$PWD/build/image"
+        shell: bash
       - run: test/test.sh
         shell: bash
   run-test-ansi:
@@ -16,6 +27,13 @@ jobs:
       - name: 'Install ansifilter'
         run: |
           sudo apt-get update
-          sudo apt-get install ansifilter
+          sudo apt-get install ansifilter meson
+        shell: bash
+      - name: 'Build wgetpaste'
+        run: |
+          mkdir build
+          meson setup build --prefix="/"
+          meson install -C ./build --destdir="$PWD/build/image"
+        shell: bash
       - run: test/test_ansi.sh
         shell: bash

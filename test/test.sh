@@ -6,6 +6,7 @@
 
 # Don't assume the test is being run from the same directory as the script
 TEST_DIR="$(dirname "$0")"
+WGETPASTE="${TEST_DIR}/../build/image/bin/wgetpaste"
 TEST_FILE="$TEST_DIR/test.txt"
 DL_DIR="$(mktemp -q --tmpdir -d wgetpaste_test.XXXXX)"
 # Services to hard skip
@@ -30,7 +31,7 @@ echo "Using download directory: $DL_DIR"
 
 # Post test file into each service (if possible)
 # Download the resulting paste into /tmp/wgetpaste_test.XXXXX/<service>.txt
-for serv in $("$TEST_DIR"/../wgetpaste -S --completions); do
+for serv in $("$WGETPASTE" -S --completions); do
     # Hard skips
     for hs in "${!HARD_SKIPS[@]}"; do
         if [ "$serv" == "$hs" ]; then
@@ -45,7 +46,7 @@ for serv in $("$TEST_DIR"/../wgetpaste -S --completions); do
     # Log deleted at the end of each loop unless error other than 401
     echo -n "Posting to $serv: "
     ERROR_LOG="$DL_DIR/$serv-error.log"
-    URL="$("$TEST_DIR"/../wgetpaste -r -s "$serv" -v "$TEST_FILE" 2>"$ERROR_LOG")"
+    URL="$("$WGETPASTE" -r -s "$serv" -v "$TEST_FILE" 2>"$ERROR_LOG")"
     STATUS="$?"
 
     # Skip failed posts (eg, not authorized for GitHub/GitLab, service error)
