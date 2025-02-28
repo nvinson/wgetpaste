@@ -1,0 +1,11 @@
+option(
+  'shebang',
+  type: 'string',
+  value: '/usr/bin/env bash',
+  description: 'Specify shebang line for wgetpaste script'
+)
+option('zsh-completions-dir',
+  type: 'string',
+  value: 'zsh/site-functions',
+  description: 'Specify location of zsh-completions directory (relative to datadir)'
+)
